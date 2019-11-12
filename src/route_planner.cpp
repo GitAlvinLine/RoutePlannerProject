@@ -89,13 +89,20 @@ RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node)
     std::vector<RouteModel::Node> path_found;
 
     // TODO: Implement your solution here.
-    for (std::vector<RouteModel::Node>::reverse_iterator current_node =
-             open_list.rbegin();
-         current_node != open_list.rend(); ++current_node)
+
+    for (int i = open_list.size() - 1; i >= 0; i--)
     {
         distance = current_node->distance(*current_node);
         path_found.push_back(*current_node);
     }
+
+    // for (std::vector<RouteModel::Node>::reverse_iterator current_node =
+    //          open_list.rbegin();
+    //      current_node != open_list.rend(); ++current_node)
+    // {
+    //     distance = current_node->distance(*current_node);
+    //     path_found.push_back(*current_node);
+    // }
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of
                                        // the map to get meters.
     return path_found;
@@ -116,17 +123,18 @@ void RoutePlanner::AStarSearch()
     RouteModel::Node *current_node = nullptr;
 
     // TODO: Implement your solution here.
-    std::vector<RouteModel::Node *>::iterator start_node = open_list.begin();
-    do
+    start_node->visited = true;
+    while (open_list.empty())
     {
         AddNeighbors(current_node);
         NextNode();
-    } while (start_node != open_list.end());
+    }
     m_Model.path = ConstructFinalPath(current_node);
 
     // This for loop was my initial thought process only when end_node was reached
 
-    // for (std::vector<RouteModel::Node *>::iterator start_node = open_list.begin(); start_node != open_list.end(); start_node++)
+    // for (std::vector<RouteModel::Node *>::iterator start_node =
+    // open_list.begin(); start_node != open_list.end(); start_node++)
     // {
     //     AddNeighbors(current_node);
     //     NextNode();
